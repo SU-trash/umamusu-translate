@@ -9,7 +9,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "適量の水分チャージ、休息により、脈拍、血圧共に正常値に推移。\nメンテナンス完了。",
-            "enText": "Water level sufficiently refueled. Pulse and blood pressure are \nback at expected levels due to resting. Maintenance complete.",
+            "enText": "Water level sufficiently refueled. Pulse and blood pressure are back \nat expected levels due to resting. Maintenance complete.",
             "nextBlock": 2,
             "pathId": 6054657514052633372,
             "blockIdx": 1
@@ -39,7 +39,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "はい。激しいスタミナ消耗による一時的な疲労と判断。\n現在、順調に回復中。つまり『大丈夫』です。",
-            "enText": "<size=28>Yes. I have concluded I was merely fatigued due to extreme stamina usage. \nCurrently going through successful recovery. Status code 200: OK.</size>",
+            "enText": "Yes. I have concluded I was merely fatigued due to extreme stamina usage. \nCurrently going through successful recovery. Status code 200: OK.",
             "nextBlock": 4,
             "pathId": -4248148821362277474,
             "blockIdx": 3
@@ -48,7 +48,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "残り7分28秒で走行可能範囲内まで回復と解析。\n呼吸を整えつつ、回復を待ちます。",
-            "enText": "<size=28>My analysis shows that there is 7m28s of recovery left until all functions are back \nonline. I will continue waiting while executing breathing functions until then.</size>",
+            "enText": "My analysis shows that there is 7m28s of recovery left until all functions are back \nonline. I will continue waiting while executing breathing functions until then.",
             "nextBlock": 5,
             "pathId": 6713035617042668818,
             "blockIdx": 4
@@ -78,7 +78,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "いえ。回復後、2000mの走行を予定しています。",
-            "enText": "No. I have scheduled a 2000m running task \nafter my recovery completes.",
+            "enText": "No. I have scheduled a 2000m running task after my recovery completes.",
             "nextBlock": 7,
             "choices": [
                 {
@@ -108,7 +108,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "まだ体が完成していないのに無茶な走りをすることは、\n故障の原因になる。そう、かいつまんで伝えた。",
-            "enText": "\"Your body isn't yet developed for that distance. That's how \naccidents happen.\" I left out the details but I <i>had</i> to tell her that.",
+            "enText": "\"Your body isn't yet developed for that distance. That's how accidents happen.\" \nI left out the details but I <i>had</i> to tell her that.",
             "nextBlock": 9,
             "pathId": 8604324205028815523,
             "blockIdx": 8
@@ -142,7 +142,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "クラシック三冠とは主に、中・長距離ＧⅠレース\n『皐月賞』『日本ダービー』『菊花賞』を指す。",
-            "enText": "<size=32>The Triple Crown title goes out to those who win the Satsuki-sho, \nJapan Derby and Kikka-sho. They are mainly medium to long races.</size>",
+            "enText": "The Triple Crown title goes out to those who win the Satsuki-sho, \nJapan Derby and Kikka-sho. They are mainly medium to long races.",
             "nextBlock": 12,
             "choices": [
                 {
@@ -167,17 +167,17 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "ミホノブルボンのトレーナーは短距離を目指していたはずだ。\n合意の上でクラシック三冠を狙っているんだろうか。",
-            "enText": "<size=35>Her trainer seemed to be aiming for short races, though. \nI wonder if he's aware of Mihono Bourbon's goal of the Triple Crown...</size>",
+            "enText": "Her trainer seemed to be aiming for short races, though. \nI wonder if he's aware of Mihono Bourbon's goal of the Triple Crown...",
             "nextBlock": 14,
             "choices": [
                 {
                     "jpText": "君のトレーナーさんは知ってるのか？",
-                    "enText": "<size=37>Did you inform your trainer about this?</size>",
+                    "enText": "Did you inform your trainer about this?",
                     "nextBlock": 14
                 },
                 {
                     "jpText": "貴方のトレーナーさんは知ってるの？",
-                    "enText": "<size=37>Did you inform your trainer about this?</size>",
+                    "enText": "Did you inform your trainer about this?",
                     "nextBlock": 14
                 }
             ],
@@ -188,7 +188,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "……マスターは――",
-            "enText": "My Master... well...",
+            "enText": "My master... well...",
             "nextBlock": 15,
             "pathId": 2471829545796107828,
             "blockIdx": 14
@@ -197,7 +197,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "マスターのトゥインクル・シリーズのデータベースレコードより、\n中・長距離の重賞レースにて通算26回の勝利記録を確認しました。",
-            "enText": "<size=30>I checked the Twinkle Series' database's records and verified that \nyou have a total of 26 wins to your name under medium and long races.</size>",
+            "enText": "I checked the Twinkle Series' database's records and verified that \nyou have a total of 26 wins to your name under medium and long races.",
             "nextBlock": 16,
             "pathId": -5429911744618332027,
             "blockIdx": 15
@@ -206,7 +206,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "私も、クラシック三冠用のトレーニングをリクエストします。",
-            "enText": "Thus, I request that you train me \nto attain the Triple Crown title too.",
+            "enText": "Thus, I request that you train me to attain the Triple Crown title too.",
             "nextBlock": 17,
             "pathId": -8533438914922800383,
             "blockIdx": 16
@@ -215,7 +215,7 @@
             "jpName": "ベテラントレーナー",
             "enName": "Veteran Trainer",
             "jpText": "しかし君は……そもそも長い距離には向いていない。\n自分でもわかっているだろう？",
-            "enText": "You know, right...? \nThat you're not well-suited for longer races at all.",
+            "enText": "You know, right...? That you're not well-suited for longer races at all.",
             "nextBlock": 18,
             "pathId": -6005472697421342210,
             "blockIdx": 17
@@ -224,7 +224,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "たしかに、デフォルトの適性距離は短距離です。\nしかし、スタミナは努力で補完可能かと。",
-            "enText": "<size=32>Correct. My default race length aptitude is that of short distances. \nHowever, I'm confident I can improve my stamina through effort.</size>",
+            "enText": "Correct. My default race length aptitude is that for short distances. \nHowever, I'm confident I can improve my stamina through effort.",
             "nextBlock": 19,
             "pathId": 1165064029024776397,
             "blockIdx": 18
@@ -242,7 +242,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "ご心配は無用です。幼少期より元トレーナーである父の下、\r\nハードトレーニングを重ねてきました。つまり、慣れています。",
-            "enText": "<size=31>No need to worry. I have a lot of difficult training under my belt since my \nchildhood. My father used to be a trainer. In short: I'm used to it.</size>",
+            "enText": "No need to worry. I have a lot of difficult training under my belt since my \nchildhood. My father used to be a trainer. In short: I'm used to it.",
             "nextBlock": 21,
             "pathId": -120223912309002231,
             "blockIdx": 20
@@ -251,7 +251,7 @@
             "jpName": "ベテラントレーナー",
             "enName": "Veteran Trainer",
             "jpText": "……はぁ。",
-            "enText": "*sigh*",
+            "enText": "Hmm...",
             "nextBlock": 22,
             "pathId": 5492715887599104038,
             "blockIdx": 21
@@ -303,7 +303,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "しかし、私の最終目標はあくまで『クラシック三冠達成』",
-            "enText": "But I am <i>not</i> changing my ultimate goal \nof the Triple Crown title.",
+            "enText": "But I am <i>not</i> changing my ultimate goal of the Triple Crown title.",
             "nextBlock": 27,
             "pathId": 5111618986053076476,
             "blockIdx": 26
@@ -312,7 +312,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "独自のフローチャートから中・長距離のトレーニングを行い、\r\n身体機能をカスタマイズしています。",
-            "enText": "I have created my own flowchart to determine my training for \nmedium and long races in order to customize my body's abilities.",
+            "enText": "I have created my own flowchart to determine my training for medium \nand long races in order to customize my body's abilities.",
             "nextBlock": 28,
             "pathId": -4163588332420163579,
             "blockIdx": 27
@@ -321,7 +321,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "これは、中距離以上のレースで1勝以上の結果を捻出し、\nマスターへ路線変更を促す目的があります。",
-            "enText": "I'm working to get first on a medium or longer distance \nrace in order to change my Master's response.",
+            "enText": "I'm working to get first on a medium or longer distance race \nin order to change my Master's response.",
             "nextBlock": 29,
             "pathId": 655599504943769427,
             "blockIdx": 28
@@ -330,12 +330,12 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "ミホノブルボンの三冠達成への意志は固いようだ。とはいえ、\nこれ以上無茶なトレーニングを1人でするのは危険だろう。",
-            "enText": "<size=32>She's really determined to get the Triple Crown. Nevertheless, \nit's still dangerous to do this extremely harsh training on her own.</size>",
+            "enText": "She's really determined to get the Triple Crown. Nevertheless, \nit's still dangerous to do this extremely harsh training on her own.",
             "nextBlock": 30,
             "choices": [
                 {
                     "jpText": "まずは担当トレーナーともう1度話を――",
-                    "enText": "<size=34>Let's talk to your trainer one more time――</size>",
+                    "enText": "Let's talk to your trainer one more time――",
                     "nextBlock": 30
                 }
             ],
@@ -407,7 +407,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "遠目でもわかる、明らかに無茶なトレーニングだ。",
-            "enText": "Even from so far away I can tell \nwhat she's doing is blatantly too much.",
+            "enText": "Even from so far away I can tell what she's doing is blatantly too much.",
             "nextBlock": 37,
             "choices": [
                 {
@@ -423,7 +423,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "アドバイスを送るだけ。指導はしない。\nそう覚悟を決めてミホノブルボンのもとへ急いだ。",
-            "enText": "\"I'm just giving her advice, I'm not coaching her!\" \nis the excuse I come up with as I run in her direction.",
+            "enText": "\"I'm just giving her advice, I'm not coaching her!\" \nWith that resolve, I run in her direction.",
             "nextBlock": 38,
             "pathId": -4576535546450250643,
             "blockIdx": 37
@@ -457,7 +457,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "中・長距離で必要なのはペース配分だ。無暗に全力を出すのでは\nなく、安定して走り続けることが、タイム更新のミソとなる。",
-            "enText": "<size=32>What's important for medium and long races is <i>pacing</i>. It's not about going \nall out but keeping up a consistent pace if you want to improve your times.</size>",
+            "enText": "What's important for medium and long races is <i>pacing</i>. It's not about \ngoing all out but keeping up a consistent pace if you want to improve your times.",
             "nextBlock": 41,
             "pathId": 3336090715281039861,
             "blockIdx": 40
@@ -466,12 +466,12 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "先日の迷子事件といい、空で距離と秒数を数えていた事といい、\n正確に物事を計るのはかなり得意なようだし、使わない手はない。",
-            "enText": "<size=32>She's good at measuring things in her head. Like when she was lost \nthe other day, or when she counted distance or seconds just earlier. \nShe might as well make good use of that ability.</size>",
+            "enText": "She's good at measuring things in her head. Like when she was lost \nthe other day, or when she counted distance or seconds just earlier. \nShe might as well make good use of that ability.",
             "nextBlock": 42,
             "choices": [
                 {
                     "jpText": "きっとタイムは縮む",
-                    "enText": "<size=33>You'll be able to lower that time, I just <i>know</i> it!</size>",
+                    "enText": "<size=25>You'll be able to lower that time, I just <i>know</i> it!</size>",
                     "nextBlock": 42
                 }
             ],
@@ -487,7 +487,7 @@
             "choices": [
                 {
                     "jpText": "それと、まずは1600mから始めよう",
-                    "enText": "<size=35>And, let's start with 1600 meters. Okay?</size>",
+                    "enText": "And, let's start with 1600 meters. Okay?",
                     "nextBlock": 43
                 }
             ],
@@ -564,7 +564,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "ミホノブルボンは、1600mを安定した調子で走り抜けた。",
-            "enText": "Mihono Bourbon managed to run that \n1600 meters at a consistent pace.",
+            "enText": "Mihono Bourbon managed to run that 1600 meters at a consistent pace.",
             "nextBlock": 50,
             "pathId": -2278430023505351972,
             "blockIdx": 49
@@ -589,7 +589,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "思わず興奮して、拍手を送る。\nしかし、ミホノブルボンは無表情なまま固まっていた。",
-            "enText": "<size=32>I was so captivated that I started clapping for her without realizing. \nMihono Bourbon still had her usual expressionless face though.</size>",
+            "enText": "I was so captivated that I started clapping for her without realizing. \nMihono Bourbon still had her usual expressionless face though.",
             "nextBlock": 52,
             "pathId": -8372226076380908785,
             "blockIdx": 51
@@ -614,7 +614,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "……ステータス『喜び』への推移を確認。",
-            "enText": "Changed status to 'delighted'...",
+            "enText": "Determined a status change to 'delight'...",
             "nextBlock": 54,
             "pathId": -7594599181040197318,
             "blockIdx": 53
@@ -632,7 +632,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "そう呟いたミホノブルボンは無表情だ。\nでもなぜだか、少しだけほほ笑んでいるように見えた。",
-            "enText": "Her face still shows no emotion as she says that. \nBut I think I saw a smile, albeit for just a moment.",
+            "enText": "Her face still shows no emotion as she says that. \nBut I think I saw a smile, albeit just for a moment.",
             "nextBlock": 56,
             "pathId": 4746427237760104761,
             "blockIdx": 55
@@ -641,7 +641,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "こうして、彼女が無茶をしないよう夜な夜なコースに来ては、\n見守る毎日が始まったのだった。",
-            "enText": "<size=34>And so began a daily routine of coming to the race track night after night \nto watch over her and make sure she doesn't overexert herself.</size>",
+            "enText": "And so began a daily routine of coming to the race track night after night \nto watch over her and make sure she doesn't overexert herself.",
             "nextBlock": -1,
             "pathId": 8475094268447638877,
             "blockIdx": 56

@@ -9,7 +9,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "ウマ娘のトレーナーとして\r\nトレセン学園での生活を始めてから、早数日。",
-            "enText": "It's been a few days since I've become \na trainer at Tracen Academy.",
+            "enText": "A few days since I've become a trainer at Tracen Academy.",
             "nextBlock": 2,
             "pathId": -3183674846948780726,
             "blockIdx": 1
@@ -160,7 +160,7 @@
             "choices": [
                 {
                     "jpText": "40ちょっとかな？",
-                    "enText": "It's about forty-odd meters?",
+                    "enText": "It's about forty and a bit?",
                     "nextBlock": 14
                 }
             ],
@@ -171,7 +171,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "……『40ちょっと』……？",
-            "enText": "Forty... odd...?",
+            "enText": "Forty... and a bit...?",
             "nextBlock": 15,
             "choices": [
                 {
@@ -320,7 +320,7 @@
             "jpName": "中堅トレーナー",
             "enName": "Average Trainer",
             "jpText": "噂通り、魅力的なスピードだわ。\r\n短距離路線はとんでもない大型新人が現れたわね……！",
-            "enText": "The rumors were right, her speed is truly fascinating. The short \ndistance curriculum is about to have an incredibly talented newcomer!",
+            "enText": "WIP",
             "nextBlock": 30,
             "pathId": 8886349171418670700,
             "blockIdx": 29
@@ -398,7 +398,7 @@
             "jpName": "中堅トレーナー",
             "enName": "Average Trainer",
             "jpText": "あー、ダメよ。\r\nもうあの子、トレーナーついちゃってるの……。",
-            "enText": "It's no use. It seems she already has a trainer.",
+            "enText": "It's no use. She already has a trainer.",
             "nextBlock": 36,
             "choices": [
                 {
@@ -439,7 +439,7 @@
             "jpName": "中堅トレーナー",
             "enName": "Average Trainer",
             "jpText": "バリバリの短距離路線で考えてるって、\r\nあのトレーナーさん、張り切ってたわよ。",
-            "enText": "He said he's looking at the short distance \ncurriculum and he's enthusiastic about it.",
+            "enText": "WIP",
             "nextBlock": 39,
             "pathId": -3423378473899198508,
             "blockIdx": 38
@@ -516,7 +516,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "通常、体が出来上がっていないデビュー前のウマ娘に、\r\nここまで長い距離のトレーニングをさせることはない。",
-            "enText": "Normally you shouldn't let a horse girl run this distance right \nafter her debut because their bodies wouldn't be ready for it.",
+            "enText": "Normally you shouldn't let a horse girl this distance right \nafter her debut because their bodies wouldn't be ready for it.",
             "nextBlock": 46,
             "pathId": -599748735688382723,
             "blockIdx": 45
@@ -559,7 +559,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "突如倒れこんだミホノブルボンに、慌てて駆け寄った――",
-            "enText": "She just fell over! \nI hurry towards her.",
+            "enText": "She just fell over! I hurry towards her.",
             "nextBlock": -1,
             "pathId": 7642043380533049783,
             "blockIdx": 49

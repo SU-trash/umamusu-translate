@@ -160,7 +160,7 @@
             "choices": [
                 {
                     "jpText": "40ちょっとかな？",
-                    "enText": "It's about forty-odd meters?",
+                    "enText": "It's about forty and a bit?",
                     "nextBlock": 14
                 }
             ],
@@ -171,7 +171,7 @@
             "jpName": "ミホノブルボン",
             "enName": "Mihono Bourbon",
             "jpText": "……『40ちょっと』……？",
-            "enText": "Forty... odd...?",
+            "enText": "Forty... and a bit...?",
             "nextBlock": 15,
             "choices": [
                 {
@@ -516,7 +516,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "通常、体が出来上がっていないデビュー前のウマ娘に、\r\nここまで長い距離のトレーニングをさせることはない。",
-            "enText": "Normally you shouldn't let a horse girl run this distance right \nafter her debut because their bodies wouldn't be ready for it.",
+            "enText": "Normally you shouldn't let a horse girl this distance right \nafter her debut because their bodies wouldn't be ready for it.",
             "nextBlock": 46,
             "pathId": -599748735688382723,
             "blockIdx": 45
@@ -559,7 +559,7 @@
             "jpName": "モノローグ",
             "enName": "",
             "jpText": "突如倒れこんだミホノブルボンに、慌てて駆け寄った――",
-            "enText": "She just fell over! \nI hurry towards her.",
+            "enText": "She just fell over! I hurry towards her.",
             "nextBlock": -1,
             "pathId": 7642043380533049783,
             "blockIdx": 49
