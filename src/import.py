@@ -1,166 +1,297 @@
-import os
-import UnityPy
+import argparse
 import common
-from common import GAME_ASSET_ROOT, TranslationFile
+from pathlib import Path
+import UnityPy
+from UnityPy.files import ObjectReader
+from os import SEEK_END, PathLike
+from traceback import print_exc
+from sys import stdout
+from functools import reduce
 
-# Globals & Parameter parsing
-args = common.Args().parse()
-if args.getArg("-h"):
-    common.usage("[-g <group>] [-id <id>] [-src <game asset root>] [-dst <asset save path>] [-O(verwrite)] [-S(ilently skip unchanged)]",
-                 "Saves all files to <project root>/dat by default")
+class ConfigError(Exception): pass
+class PatchError(Exception): pass
+class AlreadyPatchedError(PatchError): pass
+class TranslationFileError(PatchError): pass
+class NoAssetError(PatchError): pass
 
-IMPORT_TYPE = args.getArg("-t", "story").lower()
-common.checkTypeValid(IMPORT_TYPE)
-IMPORT_GROUP = args.getArg("-g", False)
-IMPORT_ID = args.getArg("-id", False)
-IMPORT_IDX = args.getArg("-idx", False)
-GAME_ASSET_ROOT = args.getArg("-src", GAME_ASSET_ROOT)
-SAVE_DIR = args.getArg("-dst", os.path.realpath("dat/"))
-OVERWRITE_GAME_DATA = args.getArg("-O", False)
-VERBOSE = args.getArg("-V", False)
+class PatchManager:
+    editMark = b"\x08\x04"
+    
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.errorLog = stdout
+        self.config(args)
 
-
-def get_meta(filePath: str) -> tuple[UnityPy.environment.Environment, UnityPy.environment.files.ObjectReader]:
-    env = UnityPy.load(filePath)
-    return env, next(iter(env.container.values())).get_obj()
-
-# Main import controller
-def swapAssetData(tlFile: TranslationFile):
-    bundle = tlFile.getBundle()
-    textList = tlFile.getTextBlocks()
-    bundleType = tlFile.getType()
-    assetPath = os.path.join(GAME_ASSET_ROOT, bundle[0:2], bundle)
-
-    if not os.path.exists(assetPath):
-        return f"AssetBundle {bundle} does not exist in your game data, skipping..."
-
-    try:
-        env, mainFile = get_meta(assetPath)
-    except Exception as e:
-        return f"UnityPy Error: {repr(e)}, skipping {bundle}..."
-
-    assetList = mainFile.assets_file.files
-    textBlocksSkipped = 0
-    lockAsset = False
-
-    for textIdx, textData in enumerate(textList):
-        if bundleType != "lyrics" and not textData['enText']:
-            textBlocksSkipped += 1
-            continue
-        
-        # Set up assets
-        if bundleType in ("race", "preview"):
-            if not lockAsset:
-                asset = mainFile
-                assetData = asset.read_typetree()
-                lockAsset = True
-        elif bundleType == "lyrics":
-            if not lockAsset:
-                asset = mainFile
-                assetData = asset.read()
-                # r = csv.reader(assetData.text.splitlines())
-                assetText = "time,lyrics\n"
-                lockAsset = True
+    def config(self, args = None, **kwargs):
+        if args:
+            self.args = args
         else:
-            try:
-                asset = assetList[textData['pathId']]
-            except KeyError:
-                print(f"Skipping block {textData['blockIdx']} in {bundle}: Can't find pathId")
-                continue
-            assetData = asset.read_typetree()
+            for k, v in kwargs.items():
+                if hasattr(self.args, k):
+                    setattr(self.args, k, v)
+                else:
+                    raise ConfigError(f"Invalid config arg: {k}: {v}")
+        if self.args.overwrite: self.args.dst = common.GAME_ASSET_ROOT
+        if self.args.silent and self.errorLog is stdout:
+                self.errorLog = open("import.log", "w")
+        elif not self.args.silent and self.errorLog is not stdout:
+                self.errorLog.close()
+                self.errorLog = stdout
 
-        # Swap data
-        if bundleType == "race":
-            assetData['textData'][textIdx]['text'] = textData['enText']
-        elif bundleType == "preview":
-            assetData['DataArray'][textIdx]['Name'] = textData['enName']
-            assetData['DataArray'][textIdx]['Text'] = textData['enText']
-        elif bundleType == "lyrics":
+    def start(self):
+        if self.args.src:
+            print(f"Importing {self.args.src} to {self.args.dst}")
+            files = [self.args.src]
+        else:
+            print(f"Importing group {self.args.group or 'all'}, id {self.args.id or 'all'}, idx {self.args.idx or 'all'} from translations\{self.args.type} to {self.args.dst}")
+            files = common.searchFiles(self.args.type, self.args.group, self.args.id, self.args.idx)
+        nFiles = len(files)
+        nErrors = 0
+        print(f"Found {nFiles} files.")
+
+        for file in files:
+            print(f"Importing {file}... ", end="", flush=True)
+            try:
+                if (self.patch(file)): 
+                    print("done.")
+                else:
+                    nFiles -= 1
+                    print("not modified.")
+            except PatchError as e:
+                nFiles -= 1
+                print(f"skipped: {e}")
+            except:
+                nFiles -= 1
+                nErrors += 1
+                print("error.") # newline
+                if self.args.silent:
+                    print(f"Error in {file}", file=self.errorLog)
+                    print_exc(chain=True, file=self.errorLog)
+                else:
+                    raise
+        print(f"Imported {nFiles} files.")
+        if nErrors > 0: print(f"There were {nErrors} errors. Check import.log for details.")
+
+    def finish(self):
+        if self.errorLog is not stdout: self.errorLog.close()
+
+    def loadTranslationFile(self, path):
+        try:
+            self.tlFile = common.TranslationFile(path)
+        except:
+            raise TranslationFileError(f"Couldn't load translation data from {path}.")
+
+    def loadBundle(self, bundle: str):
+        bundlePath = Path(common.GAME_ASSET_ROOT, bundle[0:2], bundle)
+        if not bundlePath.exists():
+            raise NoAssetError(f"{bundle} does not exist in your game data.")
+        elif self.args.update:
+            savePath = Path(self.args.dst, bundle[0:2], bundle)
+            if self.checkFilePatched(savePath):
+                raise AlreadyPatchedError(f"{bundle} already patched.")
+
+        try:
+            self.bundle = UnityPy.load(str(bundlePath))
+        except:
+            raise PatchError(f"UnityPy error, skipping {bundle}.")
+        self.rootAsset: ObjectReader = next(iter(self.bundle.container.values())).get_obj()
+        self.assets: list[ObjectReader] = self.rootAsset.assets_file.files
+
+    def patch(self, path: str):
+        """Swaps game assets with translation file data, returns modified state."""
+        self.loadTranslationFile(path)
+        self.loadBundle(self.tlFile.bundle)
+        if self.tlFile.type in ("story", "home"):
+            patcher = StoryPatcher(self)
+        elif self.tlFile.type == "race":
+            patcher = RacePatcher(self)
+        elif self.tlFile.type == "preview":
+            patcher = PreviewPatcher(self)
+        elif self.tlFile.type == "lyrics":
+            patcher = LyricsPatcher(self)
+
+        patcher.patch()
+        if patcher.isModified:
+            self.saveAsset()
+            return True
+        else: return False
+
+    def saveAsset(self):
+        # b = self.bundle.file.save() #! packer="original" or any compression doesn't seem to work, the game will crash or get stuck loading forever
+        # b += b"\x08\x04"
+        b = self.markFilePatched(self.bundle.file.save())
+        fn = self.bundle.file.name
+        fp = Path(self.args.dst, fn[0:2], fn)
+        fp.parent.mkdir(parents=True, exist_ok=True)
+        with open(fp, "wb") as f:
+            f.write(b)
+
+    @classmethod
+    def markFilePatched(cls, data: bytes):
+        return data + cls.editMark
+    @classmethod
+    def checkFilePatched(cls, filePath: PathLike):
+        try:
+            with open(filePath, "rb") as f:
+                f.seek(-2, SEEK_END)
+                if f.read(2) == cls.editMark:
+                    return True
+        except FileNotFoundError:
+            pass # Should normally not occur
+        return False
+
+class StoryPatcher:
+    def __init__(self, manager: PatchManager) -> None:
+        self.manager = manager
+        self.skipped = 0
+        self.totalBlocks = len(self.manager.tlFile.textBlocks)
+    def patch(self):
+        mainTree = self.manager.rootAsset.read_typetree()
+
+        for textBlock in self.manager.tlFile.textBlocks:
+            blockIdx = textBlock['blockIdx']
+            try:
+                self.asset = self.manager.assets[textBlock['pathId']]
+            except KeyError:
+                print(f"{self.manager.tlFile.bundle}: {blockIdx}: Can't find path id, skipping.")
+                continue
+            else:
+                assetData = self.asset.read_typetree()
+            
+            if not textBlock['enText'] and not textBlock['enName']:
+                self.skipped += 1
+                continue
+            else:
+                assetData['Text'] = textBlock['enText'] or assetData['Text']
+                assetData['Name'] = textBlock['enName'] or assetData['Name']
+
+                # Calculate length
+                # index length = sum(blocklenghts)
+                # blocklength = cliplength + startframe + 1
+                # cliplength = max(0, voicelength OR (text-length * cps / fps)) + waitframe
+                # waitframe: usually 12 if voiced, 45 otherwise BUT random exceptions occur
+                if "origClipLength" in textBlock and textBlock['enText']:
+                    print(f"Adjusting text length at {blockIdx}")
+                    newClipLen = int(assetData['WaitFrame'] + len(textBlock['enText']) / self.manager.args.cps * self.manager.args.fps)
+                    newClipLen = max(textBlock['origClipLength'], newClipLen)
+                    newBlockLen = newClipLen + assetData['StartFrame'] + 1
+                    assetData['ClipLength'] = newClipLen
+                    mainTree['BlockList'][blockIdx]['BlockLength'] = newBlockLen
+                    if "animData" in textBlock:
+                        print(f"Adjusting anim length at {blockIdx}")
+                        for animGroup in textBlock['animData']:
+                            animAsset = self.manager.assets[animGroup['pathId']]
+                            if animAsset:
+                                animData = animAsset.read_typetree()
+                                # animFullLen = animData['StartFrame'] + animGroup['origLen']
+                                animData['ClipLength'] = animGroup['origLen'] + newClipLen - textBlock['origClipLength']
+                                animAsset.save_typetree(animData)
+                                print(f"Adjusted anim length from {animGroup['origLen']} to {animData['ClipLength']}")
+                            else: print(f"Can't find animation pathId ({animGroup['pathId']}) at {blockIdx}")
+                    else:
+                        print(f"Text length adjusted but no anim data found at {blockIdx}")
+
+                if 'choices' in textBlock:
+                    jpChoices, enChoices = assetData['ChoiceDataList'], textBlock['choices']
+                    if len(jpChoices) != len(enChoices):
+                        print("Choice lengths do not match, skipping choice block.")
+                    else:
+                        for idx, choice in enumerate(textBlock['choices']):
+                            if choice['enText']:
+                                jpChoices[idx]['Text'] = choice['enText']
+
+                if 'coloredText' in textBlock:
+                    jpColored, enColored = assetData['ColorTextInfoList'], textBlock['coloredText']
+                    if len(jpColored) != len(enColored):
+                        print("Colored text lengths do not match, skipping color block...")
+                    else:
+                        for idx, text in enumerate(textBlock['coloredText']):
+                            if text['enText']:
+                                jpColored[idx]['Text'] = text['enText']
+            self.assetData = assetData
+            self.save()
+
+        try:
+            mainTree['TypewriteCountPerSecond'] = self.manager.args.fps * 3
+            mainTree['Length'] = reduce(lambda x, b: x + b['BlockLength'], mainTree['BlockList'], 0)
+            self.manager.rootAsset.save_typetree(mainTree)
+        except Exception as e:
+            print(f"Unexpected error in {self.manager.tlFile.bundle}: {type(e).__name__}: {e}")
+    def save(self):
+        if self.isModified:
+            self.asset.save_typetree(self.assetData)
+    @property
+    def isModified(self):
+        return self.skipped != self.totalBlocks
+
+class RacePatcher(StoryPatcher):
+    def __init__(self, manager: PatchManager) -> None:
+        super().__init__(manager)
+        self.asset = self.manager.rootAsset
+        self.assetData = self.asset.read_typetree()
+    def patch(self):
+        for textBlock in self.manager.tlFile.textBlocks:
+            blockIdx = textBlock['blockIdx'] - 1 # race keys start at 1
+            if textBlock['enText']: self.assetData['textData'][blockIdx]['text'] = textBlock['enText']
+            else: self.skipped += 1; continue
+        self.save()
+
+class PreviewPatcher(RacePatcher):
+    def patch(self):
+        for blockIdx, textBlock in enumerate(self.manager.tlFile.textBlocks):
+            if not textBlock['enText'] and not textBlock['enName']:
+                self.skipped += 1
+                continue
+            else:
+                if textBlock['enName']: self.assetData['DataArray'][blockIdx]['Name'] = textBlock['enName']
+                if textBlock['enText']: self.assetData['DataArray'][blockIdx]['Text'] = textBlock['enText']
+        self.save()
+
+class LyricsPatcher(StoryPatcher):
+    def __init__(self, manager: PatchManager) -> None:
+        super().__init__(manager)
+        self.asset = self.manager.rootAsset
+        self.assetData = self.asset.read()
+        self.assetText = "time,lyrics\n"
+    def patch(self):
+        for textBlock in self.manager.tlFile.textBlocks:
             # Format the CSV text. Their parser uses quotes, no escape chars. For novelty: \t = space; \v and \f = ,; \r = \n
-            text = textData['enText']
+            text = textBlock['enText']
             if not text:
-                 text = textData['jpText']
+                text = textBlock['jpText']
+                self.skipped += 1
             elif "," in text or "\"" in text:
                 text = '"' + text.replace('\"','\"\"') + '"'
-            assetText += f"{textData['time']},{text}\n"
-        else:
-            assetData['Text'] = textData['enText'] # no entext -> skipped
-            assetData['Name'] = textData['enName'] or assetData['Name']
+            self.assetText += f"{textBlock['time']},{text}\n"
+        self.save()
 
-            if 'choices' in textData:
-                jpChoices, enChoices = assetData['ChoiceDataList'], textData['choices']
-                if len(jpChoices) != len(enChoices):
-                    print("Choice lengths do not match, skipping...")
-                else:
-                    for idx, choice in enumerate(textData['choices']):
-                        if choice['enText']:
-                            jpChoices[idx]['Text'] = choice['enText']
+    def save(self):
+        if self.isModified:
+            self.assetData.script = bytes(self.assetText, "utf8")
+            self.assetData.save()
 
-            if 'coloredText' in textData:
-                jpColored, enColored = assetData['ColorTextInfoList'], textData['coloredText']
-                if len(jpColored) != len(enColored):
-                    print("Colored text lengths do not match, skipping...")
-                else:
-                    for idx, text in enumerate(textData['coloredText']):
-                        if text['enText']:
-                            jpColored[idx]['Text'] = text['enText']
-
-            asset.save_typetree(assetData)
-
-    if textBlocksSkipped == len(textList):
-        env = None
-    else:
-        if bundleType in ("race", "preview"): asset.save_typetree(assetData)
-        elif bundleType == "lyrics": 
-            assetData.script = bytes(assetText, "utf8")
-            assetData.save()
-
-    if bundleType in ("story", "home"):
-        try:
-            mainTree = mainFile.read_typetree()
-            mainTree['TypewriteCountPerSecond'] = int(mainTree['TypewriteCountPerSecond'] * 2.25)
-            mainFile.save_typetree(mainTree)
-        except KeyError:
-            print(f"Text speed not found in {bundle}")
-        except Exception as e:
-            print(f"Unexpected error in {bundle}: {type(e).__name__}: {e}")
-
-
-    return env
-
-
-def saveAsset(env):
-    b = env.file.save() #! packer="original" or any compression doesn't seem to work, the game will crash or get stuck loading forever
-    fn = env.file.name
-    fp = os.path.join(GAME_ASSET_ROOT if OVERWRITE_GAME_DATA else SAVE_DIR, fn[0:2], fn)
-    os.makedirs(os.path.dirname(fp), exist_ok=True)
-    with open(fp, "wb") as f:
-        f.write(b)
 
 def main():
-    print(f"Importing group {IMPORT_GROUP or 'all'}, id {IMPORT_ID or 'all'} from translations\{IMPORT_TYPE} to {GAME_ASSET_ROOT if OVERWRITE_GAME_DATA else SAVE_DIR}")
-    files = common.searchFiles(IMPORT_TYPE, IMPORT_GROUP, IMPORT_ID, IMPORT_IDX)
-    nFiles = len(files)
-    print(f"Found {nFiles} files.")
+    ap = common.NewArgs("Write Game Assets from Translation Files")
+    ap.add_argument("-O", dest="overwrite", action="store_true", help="(Over)Write files straight to game directory")
+    ap.add_argument("-U", "--update", dest="update", action="store_true", help="Skip already imported files")
+    ap.add_argument("-FI", "--full-import", dest="fullImport", action="store_true", help="Import all available types")
+    ap.add_argument("-S", "--silent", dest="silent", action="store_true", help="Ignore some errors and print debug info to file. Default: terminal (stdout)")
+    ap.add_argument("-cps", default=28, type=int, help="Characters per second, for unvoiced lines (excludes choices)")
+    ap.add_argument("-fps", default=30, type=int, help="Framerate, for calculating the right text speed")
 
-    for file in files:
-        if VERBOSE: print(f"Importing {file}... ", end="", flush=True)
-        try:
-            data = TranslationFile(file)
-        except:
-            print(f"Couldn't load translation data from {file}, skipping...")
-            nFiles -= 1
-            continue
+    args = ap.parse_args()
+    process(args)
 
-        modifiedBundle = swapAssetData(data)
-        if isinstance(modifiedBundle, UnityPy.environment.Environment):
-            saveAsset(modifiedBundle)
-            if VERBOSE: print(f"done. ({data.getBundle()})")
-        else:
-            if modifiedBundle is None and VERBOSE:
-                print(f"Bundle {data.getBundle()} not changed, skipping...")
-            nFiles -= 1
+def process(args):
+    patcher = PatchManager(args)
+    try:
+        patcher.start()
+        if args.fullImport:
+            for type in common.TARGET_TYPES[1:]:
+                patcher.config(type=type)
+                patcher.start()
+    finally:
+        patcher.finish()
 
-    print(f"Imported {nFiles} files.")
-
-main()
+if __name__ == '__main__':
+    main()

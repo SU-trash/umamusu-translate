@@ -16,9 +16,10 @@ name | progress | translator
 --- | --- | ---
 Main story Act 1 Ch 5 | Complete | [LotoDS][]
 Main story Act 1 Ch 1 | Complete | [CatNipHoarder][] & [Holo][]
-Main story Act 1 Ch 6 (Final) | In progress/Transferring | [LotoDS][] (ep 1-4)
+Main story Act 1 Ch 6 (Final) | In progress/Transferring | [LotoDS][] (ep 1-12)
 Half Anniversary Story | Complete | [CatNipHoarder][] & [Holo][]
 1st Anniversary Story | Complete | [CatNipHoarder][] & [Holo][]
+Brand-New Friend | Complete | [Hades of Games][] (ep 1-2, 5-8, 4 (missing parts)), [Vacxy][] (ep 3, 4 (partial)) + [noccu][] (slightly edited)
 The Sounds of Autumn | Complete | deepl (old)
 Make up in Halloween！ | Complete | [CatNipHoarder][] & [Holo][]
 Miracles of the Holy Night | Complete | [CatNipHoarder][] & [Holo][]
@@ -30,8 +31,8 @@ Flapping Run-up | Complete | [Hades of Games][]
 name | progress | translator
 --- | --- | ---
 Agnes Digital | Complete | deepl (contributed by CryDuringItAll)
-Air Groove | In progress/Transferring | [burritoblaster][] (ep 1-3)
-Agnes Tachyon | Complete | [Ren][] (ep 1), [noccu][] (ep 2-3), [xct][] (ep 4-6), deepl
+Air Groove | In progress/Transferring | [burritoblaster][] (ep 1-5)
+Agnes Tachyon | Complete | [Ren][] (ep 1), [noccu][] (ep 2-3), [xct][] (ep 4-7)
 Biwa Hayahide | Complete | deepl (contributed by CryDuringItAll)
 Daiwa Scarlet | Complete | [XiantheMiguel][] (commissioned by AhriParty)
 Eishin Flash | Complete | deepl
@@ -43,9 +44,9 @@ Grass Wonder | Complete | deepl
 Haru Urara | Complete | [Vacxy][] (ep 1), deepl
 King Halo | Complete | [burritoblaster][]
 Kitasan Black | Complete | [LotoDS][]
-Manhattan Cafe | Complete, Transferring | deepl, [xct][]
+Manhattan Cafe | Complete | [xct][]
 Matikanetannhauser | In progress | [Snep][]
-Maruzensky | In progress/Complete | [noccu][] (ep 1-5), deepl
+Maruzensky | Complete | [noccu][]
 Mejiro Dober | In progress/Transferring | [LotoDS][] (ep 1-4)
 Mejiro Ryan | Complete | deepl (contributed by CryDuringItAll)
 Mihono Bourbon | Complete | deepl
@@ -87,7 +88,10 @@ Sakura Bakushin O | Complete | deepl
 ## Cards
 name | progress | translator
 --- | --- | ---
-All (up to 30/12/2021) | Complete | deepl
+All except the below (up to 30/12/2021) | Complete | deepl
+Vodka (R, Tracen Academy) | Complete | [robflop][]
+Vodka (SR, Annoying Observer) | Complete | [robflop][]
+Vodka (SSR, Road of Vodka) | Complete | [robflop][]
 
 # Home Dialogue
 name | progress | translator

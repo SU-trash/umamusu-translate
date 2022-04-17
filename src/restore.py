@@ -29,7 +29,7 @@ def download(file):
 
 def save(fileName):
     dstPath = join(GAME_ASSET_ROOT, fileName[:2], fileName)
-    localFile = join(LOCAL_DUMP_DIR, fileName[:2], fileName)
+    localFile = join(LOCAL_DUMP_DIR, fileName)
 
     print(f"Saving file to {dstPath}")
     if not FORCE_DL and isfile(localFile):
@@ -50,4 +50,4 @@ else:
     files = common.searchFiles(TARGET_TYPE, TARGET_GROUP, TARGET_ID, TARGET_IDX)
     for file in files:
         file = common.TranslationFile(file)
-        save(file.getBundle())
+        save(file.bundle)

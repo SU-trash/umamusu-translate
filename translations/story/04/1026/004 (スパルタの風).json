@@ -457,7 +457,7 @@
         },
         {
             "jpName": "実況",
-            "enName": "Broadcast",
+            "enName": "Commentator",
             "jpText": "中距離芝2000mのレースが始まりました！\nさぁ、勝利はどのウマ娘がつかみ取るのでしょうか――！",
             "enText": "",
             "nextBlock": 32,
@@ -532,7 +532,7 @@
         },
         {
             "jpName": "実況",
-            "enName": "Broadcast",
+            "enName": "Commentator",
             "jpText": "――さて先頭集団、ミホノブルボンを先頭に\n第4コーナーを越え、最終直線！　後続も一気にやってきた！",
             "enText": "",
             "nextBlock": 36,
@@ -583,7 +583,7 @@
         },
         {
             "jpName": "実況",
-            "enName": "Broadcast",
+            "enName": "Commentator",
             "jpText": "ついに先頭を許したミホノブルボン、残り100m食らいつくか！？",
             "enText": "",
             "nextBlock": 39,
@@ -634,7 +634,7 @@
         },
         {
             "jpName": "実況",
-            "enName": "Broadcast",
+            "enName": "Commentator",
             "jpText": "大混戦です！　4人のウマ娘誰ひとり先頭を譲らず、\r\nゴールに向かって一直線――！",
             "enText": "",
             "nextBlock": 42,
@@ -685,7 +685,7 @@
         },
         {
             "jpName": "実況",
-            "enName": "Broadcast",
+            "enName": "Commentator",
             "jpText": "勝利を手にしたのは――ミホノブルボン！！\nミホノブルボンです！！",
             "enText": "",
             "nextBlock": 45,
