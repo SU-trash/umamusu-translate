@@ -129,12 +129,13 @@ def createDict():
     names['観客'] = "Crowd"
     names['歓声'] = "Cheers"
     names['大歓声'] = "Loud Cheers"
-    names['実況'] = "Broadcast"
-    names['イベント実況'] = "Event Broadcast"
-    names['解説'] = "Commentary"
+    names['実況'] = "Commentator"
+    names['イベント実況'] = "Event Commentator"
+    names['イベント解説'] = "Event Color Commentator"
+    names['解説'] = "Color Commentator"
     names['審査員'] = "Judge"
     names['テレビ'] = "TV"
-    names['テレビの音'] = "TV Report"
+    names['テレビの音'] = "TV Audio"
     names['手紙'] = "Letter"
     names['新人トレーナー'] = "Rookie Trainer"
     names['新人トレーナーA'] = "Rookie Trainer A"
@@ -225,6 +226,8 @@ def createDict():
     names['ファンの子'] = "Child Fan"
     names['ファンの子どもたち'] = "Fan's Children"
     names['ウマ娘の子どもたち'] = "Horsegirl Children"
+    names['子どものウマ娘A'] = "Child Horsegirl A"
+    names['子どものウマ娘B'] = "Child Horsegirl B"
     names['おばさん'] = "Elder Lady"
     names['おばさんA'] = "Elder Lady A"
     names['おばさんB'] = "Elder Lady B"
@@ -252,6 +255,8 @@ def createDict():
     names['整備士B'] = "Mechanic B"
     names['整備士Ｂ'] = "Mechanic B"
     names['整備スタッフ'] = "Maintenance Staff"
+    names['同僚A'] = "Colleague A"
+    names['同僚B'] = "Colleague B"
     names['船乗り'] = "Sailor"
     names['SP隊長'] = "SP Commander"
     names['女優'] = "Actress"
@@ -278,7 +283,7 @@ def translate(namesDict):
 
     for file in files:
         file = common.TranslationFile(file)
-        for block in file.getTextBlocks():
+        for block in file.textBlocks:
             name = block['jpName']
             if name and name in namesDict:
                 block['enName'] = namesDict[name]

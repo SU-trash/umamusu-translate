@@ -1,9 +1,11 @@
+import argparse
 import os
 from pathlib import Path, PurePath
 import sys
 import json
-from typing import Generator
+from typing import Generator, Union
 import regex
+from datetime import datetime, timezone
 
 
 GAME_ROOT = os.path.realpath(os.path.join(os.environ['LOCALAPPDATA'], "../LocalLow/Cygames/umamusume/"))
@@ -38,12 +40,12 @@ def searchFiles(targetType, targetGroup, targetId, targetIdx = False) -> list:
         else: found.extend(os.path.join(root, file) for file in files if isJson(file))
     return found
 
-def readJson(file) -> dict:
+def readJson(file) -> Union[dict, list]:
     with open(file, "r", encoding="utf8") as f:
         return json.load(f)
 
 def writeJsonFile(file, data):
-    os.makedirs(os.path.dirname(file), exist_ok=True)
+    os.makedirs(os.path.dirname(os.path.realpath(file)), exist_ok=True)
     with open(file, "w", encoding="utf8", newline="\n") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -54,6 +56,24 @@ def findExisting(searchPath: os.PathLike, filePattern: str):
         if file.is_file():
             return file
     return None
+
+def parseStoryId(t, input, fromPath = True) -> tuple:
+    if t == "home":
+        if fromPath:
+            input = input[-10:]
+            return input[:2], input[3:7], input[7:]
+        else:
+            return input[:2], input[2:6], input[6:]
+    elif t == "lyrics":
+        if fromPath: input = input[-11:-7]
+        return None, None, input
+    elif t == "preview":
+        if fromPath: input = input[-4:]
+        return None, None, input
+    else:
+        # story and storyrace
+        if fromPath: input = input[-9:]
+        return  input[:2], input[2:6], input[6:9]
 
 def isParseableInt(x):
     try:
@@ -98,6 +118,39 @@ class Args:
             else: raise SystemExit("Invalid arguments")
         return self
 
+def patchVersion():
+    try:
+        with open(".git/refs/heads/master", "r") as f:
+            v = f.readline()
+    except FileNotFoundError:
+        v = os.path.getmtime("tl-progress.md")
+        v = datetime.fromtimestamp(v, tz=timezone.utc).isoformat()
+    except:
+        v = "unknown"
+    finally: 
+        return v
+
+class NewArgs(argparse.ArgumentParser):
+    def __init__(self, desc) -> None:
+        if len(sys.argv) > 1 and sys.argv[1] in ("-v", "--version"):
+            print(f"Patch version: {patchVersion()}")
+            sys.exit()
+        super().__init__(description=desc, conflict_handler='resolve')
+        self.add_argument("-v", "--version", help="Show version and exit")
+        self.add_argument("-t", "--type", choices=TARGET_TYPES, default=TARGET_TYPES[0], help="The type of assets to process.")
+        self.add_argument("-g", "--group", help="The group to process")
+        self.add_argument("-id", help="The id (subgroup) to process")
+        self.add_argument("-idx", help="The specific asset index to process")
+        self.add_argument("-src", default=GAME_ASSET_ROOT)
+        self.add_argument("-dst", default=Path("dat/").resolve())
+    def add_argument(self, *args, **kwargs):
+        if 'default' in kwargs and not args[0].startswith("-h"):
+            if 'help' in kwargs:
+                kwargs['help'] += ". Default: %(default)s"
+            else:
+                kwargs['help'] = "Default: %(default)s"
+        return super().add_argument(*args, **kwargs)
+
 class TranslationFile:
     def __init__(self, file):
         self.file = file
@@ -111,14 +164,15 @@ class TranslationFile:
         else:
             return 1
 
-    def getTextBlocks(self) -> list:
+    @property
+    def textBlocks(self) -> list:
         if self.version > 1:
             return self.data['text']
         else:
             return list(self.data.values())[0]
 
     def genTextContainers(self) -> Generator[dict, None, None]:
-        for block in self.getTextBlocks():
+        for block in self.textBlocks:
             if block['jpText']:
                 yield block
             if 'coloredText' in block:
@@ -128,13 +182,15 @@ class TranslationFile:
                 for entry in block['choices']:
                     yield entry
 
-    def getBundle(self):
+    @property
+    def bundle(self):
         if self.version > 1:
             return self.data['bundle']
         else:
             return list(self.data.keys())[0]
-
-    def getType(self):
+    
+    @property
+    def type(self):
         if self.version > 2:
             return self.data['type']
         else:
@@ -143,7 +199,7 @@ class TranslationFile:
     def getStoryId(self):
         if self.version > 3:
             return self.data['storyId']
-        elif self.version > 2 and self.getType() != "000000000":
+        elif self.version > 2 and self.data['storyId'] != "000000000":
             return self.data['storyId']
         else:
             isN = regex.compile(r"\d+")

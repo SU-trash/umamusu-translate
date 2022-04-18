@@ -25,11 +25,10 @@ EXPORT_DIR = args.getArg("-dst", PurePath("translations").joinpath(EXTRACT_TYPE)
 OVERWRITE_DST = args.getArg("-O", False)
 UPDATE = args.getArg("-upd", False)
 
-
 def queryDB(db = None, storyId = None):
     externalDb = bool(db)
     if storyId:
-        group, id, idx = parseStoryId(storyId, False)
+        group, id, idx = common.parseStoryId(EXTRACT_TYPE, storyId, False)
     else:
         group = EXTRACT_GROUP or "__"
         id = EXTRACT_ID or "____"
@@ -76,7 +75,7 @@ def extractAsset(path, storyId, tlFile = None):
     if index.serialized_type.nodes:
         tree = index.read_typetree()
         export = {
-            'version': 4,
+            'version': 5,
             'bundle': env.file.name,
             'type': EXTRACT_TYPE,
             'storyId': "",
@@ -85,6 +84,7 @@ def extractAsset(path, storyId, tlFile = None):
         }
         isPatched = CheckPatched(env.file.name)
         transferExisting = DataTransfer(tlFile)
+        assetList = index.assets_file.files
 
         if EXTRACT_TYPE == "race":
             export['storyId'] = tree['m_Name'][-9:]
@@ -128,6 +128,30 @@ def extractAsset(path, storyId, tlFile = None):
                     if not textData:
                         continue
                     if isPatched(textData): return
+
+                    if "origClipLength" in textData:
+                        print(f"Attempting anim data export at BlockIndex {block['BlockIndex']}")
+                        clipsToUpdate = list()
+                        for trackGroup in block['CharacterTrackList']:
+                            keys = trackGroup.keys()
+                            for key in keys:
+                                if key.endswith("MotionTrackData") and trackGroup[key]['ClipList']:
+                                    clipsToUpdate.append(trackGroup[key]['ClipList'][-1]['m_PathID'])
+                        if clipsToUpdate:
+                            textData['animData'] = list()
+                            for clipPathId in clipsToUpdate:
+                                animAsset = assetList[clipPathId]
+                                if animAsset:
+                                    animData = animAsset.read_typetree()
+                                    animGroupData = dict()
+                                    animGroupData['origLen'] = animData['ClipLength']
+                                    animGroupData['pathId'] = clipPathId
+                                    textData['animData'].append(animGroupData)
+                                else:
+                                    print(f"No anim asset ({clipPathId}) found at BlockIndex {block['BlockIndex']}")
+                        else:
+                            print(f"Anim clip list empty at BlockIndex {block['BlockIndex']}")
+
                     textData['pathId'] = pathId  # important for re-importing
                     textData['blockIdx'] = block['BlockIndex'] # to help translators look for specific routes
                     transferExisting(storyId, textData)
@@ -164,7 +188,8 @@ def extractText(assetType, obj):
             'enName': "",  # todo: auto lookup
             'jpText': tree['Text'],
             'enText': "",
-            'nextBlock': tree['NextBlock'] # maybe for adding blocks to split dialogue later
+            'nextBlock': tree['NextBlock'], # maybe for adding blocks to split dialogue later
+            'origClipLength': tree['ClipLength']
         }
         choices = tree['ChoiceDataList'] #always present
         if choices:
@@ -215,7 +240,7 @@ class DataTransfer():
 
         textSearch = False
         targetBlock = None
-        textBlocks = self.file.getTextBlocks()
+        textBlocks = self.file.textBlocks
         if 'blockIdx' in textData:
             txtIdx = max(textData["blockIdx"] - 1 - self.offset, 0)
             if txtIdx < len(textBlocks):
@@ -263,25 +288,6 @@ class DataTransfer():
 def exportData(data, filepath: str):
     if OVERWRITE_DST == True or not os.path.exists(filepath):
         common.writeJsonFile(filepath, data)
-
-
-def parseStoryId(input, fromPath = True) -> tuple:
-    if EXTRACT_TYPE == "home":
-        if fromPath:
-            input = input[-10:]
-            return input[:2], input[3:7], input[7:]
-        else:
-            return input[:2], input[2:6], input[6:]
-    elif EXTRACT_TYPE == "lyrics":
-        if fromPath: input = input[-11:-7]
-        return None, None, input
-    elif EXTRACT_TYPE == "preview":
-        if fromPath: input = input[-4:]
-        return None, None, input
-    else:
-        # story and storyrace
-        if fromPath: input = input[-9:]
-        return  input[:2], input[2:6], input[6:9]
         
 def exportAsset(bundle: str, path: str, db = None):
     if bundle is None:
@@ -290,12 +296,11 @@ def exportAsset(bundle: str, path: str, db = None):
         bundle, _ = queryDB(db, storyId)[0]
     else: # make sure tlFile is set for the call later
         tlFile = None
-    group, id, idx = parseStoryId(storyId if UPDATE else path, not UPDATE)
+    group, id, idx = common.parseStoryId(EXTRACT_TYPE, storyId if UPDATE else path, not UPDATE)
     if EXTRACT_TYPE in ("lyrics", "preview"):
         exportDir = Path(EXPORT_DIR)
     else:
         exportDir =  Path(EXPORT_DIR).joinpath(group, id)
-    
 
     # check existing files first
     if not OVERWRITE_DST:
@@ -357,4 +362,6 @@ def main():
         for bundle, path in q:
             exportAsset(bundle, path)
     print("Processing finished successfully.")
-main()
+
+if __name__ == '__main__':
+    main()
